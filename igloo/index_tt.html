@@ -1,0 +1,137 @@
+<html>
+  <head>
+    <script>
+     /* fetch('http://173.230.151.161:8100?id=431024127')
+        .then((response) => {
+      *  return response.json();
+        })
+        .then((data) => {
+      *  console.log(data);
+        });
+      */
+
+
+     var tag = {};
+
+	tag.fieldMapping = {
+		"tag_compliance_officer_name":"Tag Compliance Officer Name",
+		"tag_compliance_officer_email":"Tag Compliance Officer Email",
+		"tag_membership_type_2":"Tag Membership Type",
+		"verified_by_tag_enrollment_date":"Verified By TAG Enrollment Date",
+		"membership_agreement_status":"Membership Agreement Status",
+		"small_business_exemption":"Small Business Exemption",
+		"caf_certification_countries":"CAF Certification Countries",
+		"caf_certification_business_role":"CAF Certification Covered Parties",
+		"caf_certification_regions":"CAF Certification Regions",
+		"caf_attestation_type":"CAF Certification Type",
+		"caf_enrollment_date":"CAF Enrollment Date",
+		"caf_seal_achieve_date":"CAF Seal Achieve Date",
+		"caf_seal_expiration_date":"CAF Seal Expiration Date",
+		"cap_certification_countries":"CAP Certification Countries",
+		"cap_certification_business_role":"CAP Certification Covered Parties",
+		"cap_certification_regions":"CAP Certification Regions",
+		"cap_attestation_type":"CAP Certification Type",
+		"cap_enrollment_date":"CAP Enrollment Date",
+		"cap_seal_achieve_date":"CAP Seal Achieve Date",
+		"cap_seal_expiration_date":"CAP Seal Expiration Date",
+		"cam_certification_countries":"CAM Certification Countries",
+		"cam_certification_business_role":"CAM Certification Covered Parties",
+		"cam_certification_regions":"CAM Certification Regions",
+		"attestation_type":"CAM Certification Type",
+		"cam_enrollment_date":"CAM Enrollment Date",
+		"cam_seal_achieve_date":"CAM Seal Achieve Date",
+		"cam_seal_expiration_date":"CAM Seal Expiration Date",
+		"iqg_certification_countries":"IQG Certification Countries",
+		"iqg_certification_covered_parties":"IQG Certification Covered Parties",
+		"iqg_certification_regions":"IQG Certification Regions",
+		"iqg_attestation_type":"IQG Certification Type",
+		"iqg_enrollment_date":"IQG Enrollment Date",
+		"iqg_seal_achieve_date":"IQG Seal Achieve Date",
+		"iqg_seal_expiration_date":"IQG Seal Expiration Date",
+		"compliance_officer_caf_training_date":"CAF Training Date - Compliance Officer",
+		"compliance_officer_cam_training_date":"CAM Training Date - Compliance Officer",
+		"compliance_officer_cap_training_date":"CAP Training Date - Compliance Officer",
+		"compliance_officer_iqg_training_date":"IQG Training Date - Compliance Officer",
+		"compliance_officer_vbt_training_date":"VbT Training Date - Compliance Officer",
+		};
+
+	tag.displayMemberData = function() {
+		var table = document.getElementById("tag_data_table");
+		
+		
+		var row = table.insertRow(-1); // Insert row in last position
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		cell1.innerHTML = "<strong>TAG ID</strong>";
+		cell2.innerHTML = tag.id;
+		
+		Object.keys(tag.fieldMapping).forEach(function (key) {
+			var value = tag.json[key];
+			// if (value == null) { return; } // skip rows where there is no value
+			
+			var row = table.insertRow(-1); // Insert row in last position
+			var cell1 = row.insertCell(0);
+			var cell2 = row.insertCell(1);
+			cell1.innerHTML = "<strong>" + tag.fieldMapping[key] + "</strong>";
+			cell2.innerHTML = value;
+		});
+	};
+
+	tag.requestMemberData = function(memberId) {
+    let url  =  'http://52.25.198.234/?id=' + memberId;
+		// var url = 'http://173.230.151.161:8100?id=' + memberId;
+		   /* var url = 'http://tnt.rampartcomputer.com?id=' + memberId; */
+		
+		fetch(url)
+		.then( response => { return response.json(); })
+		.then((data) => {
+			tag.json = data.properties;
+			tag.id = data.id;
+			tag.displayMemberData();
+		})
+		.catch((error) => {
+			tag.displayBadResponseMessage()
+		});
+	};
+
+	tag.displayInactiveMessage = function() {
+		var container = document.getElementById("tag_inactive_member_span");
+		container.innerHTML = "<h3>You are not currently an active member of TAG. <br />Please contact TAG for assistance</h3>";
+	};
+
+	tag.getMemberId = function() {
+		var url = window.location.href;
+		var token = '/member/';
+		var preParams = url.split('?')[0];
+		var space = preParams.substring(preParams.indexOf(token) + token.length).split('/')[0];
+		
+		if (isNaN(space)) { return null; }
+		else return space;
+	}
+
+	tag.displayBadResponseMessage = function() {
+		var container = document.getElementById("tag_bad_response_span");
+		container.innerHTML = "<h4>Unable to retrieve member data. Please try again or contact TAG for support.</h4>";
+	};
+
+	document.addEventListener("DOMContentLoaded", function() {
+		tag.requestMemberData(tag.getMemberId("995637474"));
+	});
+
+    </script>
+  </head>
+  <body><div>
+    <table id="tag_data_table">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div></body>
+
+
+</html>
